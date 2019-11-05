@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/DepthImagePlayer">
+        <file>Resources/icon/last.png</file>
+        <file>Resources/icon/next.png</file>
+        <file>Resources/icon/open.png</file>
+        <file>Resources/icon/pause.png</file>
+        <file>Resources/icon/play.png</file>
+        <file>Resources/icon/clean.png</file>
+    </qresource>
+</RCC>
