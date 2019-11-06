@@ -226,7 +226,8 @@ void DepthImagePlayer::slotUpdateImage(cv::Mat img, int rst)
 	{
 		QObject::disconnect(&process, SIGNAL(updateImage(cv::Mat, int)), this, SLOT(slotUpdateImage(cv::Mat, int)));
 		
-		//TODO UI异常处理
+		//UI异常处理
+		ui.pushButtonPlayAndPause->setIcon(QIcon(":/DepthImagePlayer/Resources/icon/play.png"));
 			
 		return;
 	}
