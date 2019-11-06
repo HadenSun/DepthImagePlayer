@@ -29,7 +29,7 @@ protected:
 
 private:
 	bool isRun = 0;
-	uint16_t time = 0;					//循环延时时间
+	uint16_t time = 100;					//循环延时时间
 	QStringList files;					//文件列表
 	QString		dir;					//文件夹目录
 	int currentIndex = 0;			//当前文件序号

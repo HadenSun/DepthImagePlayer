@@ -23,10 +23,15 @@ void ImageProcess::run()
 		//检查是否到最后
 		if (currentIndex < files.size())
 		{
+			//打开文件
 			QString fileFullName = dir + "/" + files.at(currentIndex);
-			qDebug() << fileFullName;
 			cv::Mat img = cv::imread(fileFullName.toLocal8Bit().toStdString(), CV_LOAD_IMAGE_ANYCOLOR | CV_LOAD_IMAGE_ANYDEPTH);
-			qDebug() << img.type();
+
+
+			//TODO 添加算法代码在这里
+
+
+
 			emit updateImage(img.clone(), currentIndex);
 		}
 		else

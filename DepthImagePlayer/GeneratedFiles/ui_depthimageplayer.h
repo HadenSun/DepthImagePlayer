@@ -41,8 +41,10 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout_3;
+    QSpacerItem *horizontalSpacer_3;
     QLabel *labelImageOri;
     QLabel *lableImageRst;
+    QSpacerItem *horizontalSpacer_4;
     QHBoxLayout *horizontalLayout_4;
     QSpacerItem *horizontalSpacer;
     QPushButton *pushButtonLast;
@@ -96,6 +98,10 @@ public:
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setSpacing(6);
         horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
+        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_3->addItem(horizontalSpacer_3);
+
         labelImageOri = new QLabel(centralWidget);
         labelImageOri->setObjectName(QStringLiteral("labelImageOri"));
 
@@ -105,6 +111,10 @@ public:
         lableImageRst->setObjectName(QStringLiteral("lableImageRst"));
 
         horizontalLayout_3->addWidget(lableImageRst);
+
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_3->addItem(horizontalSpacer_4);
 
 
         verticalLayout_2->addLayout(horizontalLayout_3);
@@ -262,7 +272,7 @@ public:
         ___qtreewidgetitem->setText(0, QApplication::translate("DepthImagePlayerClass", "Files", 0));
         dockWidgetParameters->setWindowTitle(QApplication::translate("DepthImagePlayerClass", "Parameters", 0));
         lineEditMax->setText(QApplication::translate("DepthImagePlayerClass", "30000", 0));
-        lineEditTimes->setText(QApplication::translate("DepthImagePlayerClass", "0", 0));
+        lineEditTimes->setText(QApplication::translate("DepthImagePlayerClass", "100", 0));
         label->setText(QApplication::translate("DepthImagePlayerClass", "Max:", 0));
         label_2->setText(QApplication::translate("DepthImagePlayerClass", "Times:", 0));
         label_3->setText(QApplication::translate("DepthImagePlayerClass", "Min:", 0));

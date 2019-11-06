@@ -5,6 +5,9 @@ DepthImagePlayer::DepthImagePlayer(QWidget *parent)
 {
 	ui.setupUi(this);
 
+	//默认不启用算法，隐藏算法结果框
+	ui.lableImageRst->hide();
+
 	//按钮槽
 	QObject::connect(ui.actionOpen, &QAction::triggered, this, &DepthImagePlayer::open);
 	QObject::connect(ui.actionClean, &QAction::triggered, this, &DepthImagePlayer::clean);
@@ -126,13 +129,16 @@ void DepthImagePlayer::slotPushButtonPlayAndPause()
 		process.stop();
 		QObject::disconnect(&process, SIGNAL(updateImage(cv::Mat, int)), this, SLOT(slotUpdateImage(cv::Mat, int)));
 
-		//TODO UI界面处理
-		
+		//UI界面处理
+		ui.pushButtonPlayAndPause->setIcon(QIcon(":/DepthImagePlayer/Resources/icon/play.png"));
 	}
 	else
 	{
 		//图像更新槽
 		QObject::connect(&process, SIGNAL(updateImage(cv::Mat, int)), this, SLOT(slotUpdateImage(cv::Mat, int)));
+
+		//UI界面更新
+		ui.pushButtonPlayAndPause->setIcon(QIcon(":/DepthImagePlayer/Resources/icon/pause.png"));
 
 		//启动准备
 		process.setCurrentIndex(indexOfCurrentItem);
@@ -166,8 +172,23 @@ void DepthImagePlayer::slotDataTreeItemSelected(QTreeWidgetItem* item, int i)
 
 void DepthImagePlayer::slotAlgorithmChecked()
 {
+	//获取选框状态
 	int state = ui.checkBoxAlgorithm->checkState();
 	qDebug() << state;
+
+
+	if (state)
+	{
+		//启用
+		ui.lableImageRst->show();
+		//TODO process设置
+	}
+	else
+	{
+		//不启用
+		ui.lableImageRst->hide();
+		//TODO process设置
+	}
 }
 
 void DepthImagePlayer::slotChangeMaxAndMinValue()
@@ -180,8 +201,13 @@ void DepthImagePlayer::slotChangeMaxAndMinValue()
 	ui.lineEditMax->setText(QString::number(maxValue));
 	ui.lineEditMin->setText(QString::number(minValue));
 
+	//如果没有在播放
 	//重新加载一下当前图片
-	slotDataTreeItemSelected(currentItem, 0);
+	if (!process.getRunState())
+	{
+		slotDataTreeItemSelected(currentItem, 0);
+	}
+		
 }
 
 void DepthImagePlayer::slotChangeTimeValue()

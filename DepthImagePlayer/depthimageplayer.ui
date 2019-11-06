@@ -23,6 +23,19 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QLabel" name="labelImageOri">
           <property name="text">
            <string>TextLabel</string>
@@ -35,6 +48,19 @@
            <string>TextLabel</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
@@ -213,7 +239,7 @@
        <item row="1" column="1">
         <widget class="QLineEdit" name="lineEditTimes">
          <property name="text">
-          <string>0</string>
+          <string>100</string>
          </property>
         </widget>
        </item>
