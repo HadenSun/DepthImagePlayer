@@ -7,6 +7,7 @@
 #include <qdir.h>
 #include <QMenuBar>
 #include <QToolBar>
+#include <QMouseEvent>
 #include <QStatusBar>
 #include <QFileDialog>
 #include <QColorDialog>
@@ -36,11 +37,17 @@ public slots:
 	void slotAlgorithmChecked();		//算法功能槽
 	void slotChangeMaxAndMinValue();	//最大小距离改变槽
 	void slotChangeTimeValue();			//改变等待时间槽
+	void slotLabelClicked();			//点击图像
 	void slotUpdateImage(cv::Mat, int);	//更新得到的图像
 	
 
+protected:
+	bool eventFilter(QObject *, QEvent *);	//过滤图片label点击事件，获取坐标位置
+
+
 private:
 	Ui::DepthImagePlayerClass ui;
+	cv::Mat matOri_uint16;				//存储读取到的原始图像，CV_16UC1类型
 	QString fileDir;					//文件夹路径
 	int indexOfCurrentItem = 0;	//存储当前文件在文件树中位置
 	QTreeWidgetItem* currentItem = NULL;	

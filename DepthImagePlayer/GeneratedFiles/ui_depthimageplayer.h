@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDockWidget>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -40,11 +41,13 @@ public:
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout_2;
     QVBoxLayout *verticalLayout_2;
+    QSpacerItem *verticalSpacer_2;
     QHBoxLayout *horizontalLayout_3;
     QSpacerItem *horizontalSpacer_3;
     QLabel *labelImageOri;
     QLabel *lableImageRst;
     QSpacerItem *horizontalSpacer_4;
+    QSpacerItem *verticalSpacer;
     QHBoxLayout *horizontalLayout_4;
     QSpacerItem *horizontalSpacer;
     QPushButton *pushButtonLast;
@@ -61,6 +64,16 @@ public:
     QDockWidget *dockWidgetParameters;
     QWidget *dockWidgetContents_2;
     QVBoxLayout *verticalLayout_4;
+    QGridLayout *gridLayout_2;
+    QLabel *label_6;
+    QLabel *label_5;
+    QLineEdit *lineEditValue;
+    QLabel *label_4;
+    QLineEdit *lineEditX;
+    QLineEdit *lineEditY;
+    QLabel *label_7;
+    QLineEdit *lineEditDepth;
+    QFrame *line;
     QGridLayout *gridLayout;
     QLineEdit *lineEditMax;
     QLineEdit *lineEditTimes;
@@ -95,6 +108,10 @@ public:
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         verticalLayout_2->setContentsMargins(-1, -1, -1, 0);
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_2->addItem(verticalSpacer_2);
+
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setSpacing(6);
         horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
@@ -118,6 +135,10 @@ public:
 
 
         verticalLayout_2->addLayout(horizontalLayout_3);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout_2->addItem(verticalSpacer);
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setSpacing(6);
@@ -198,13 +219,72 @@ public:
         DepthImagePlayerClass->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dockWidgetFiles);
         dockWidgetParameters = new QDockWidget(DepthImagePlayerClass);
         dockWidgetParameters->setObjectName(QStringLiteral("dockWidgetParameters"));
-        dockWidgetParameters->setMinimumSize(QSize(200, 136));
+        dockWidgetParameters->setMinimumSize(QSize(200, 251));
         dockWidgetContents_2 = new QWidget();
         dockWidgetContents_2->setObjectName(QStringLiteral("dockWidgetContents_2"));
         verticalLayout_4 = new QVBoxLayout(dockWidgetContents_2);
         verticalLayout_4->setSpacing(6);
         verticalLayout_4->setContentsMargins(11, 11, 11, 11);
         verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        gridLayout_2 = new QGridLayout();
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_2->setContentsMargins(-1, -1, -1, 0);
+        label_6 = new QLabel(dockWidgetContents_2);
+        label_6->setObjectName(QStringLiteral("label_6"));
+
+        gridLayout_2->addWidget(label_6, 2, 0, 1, 1);
+
+        label_5 = new QLabel(dockWidgetContents_2);
+        label_5->setObjectName(QStringLiteral("label_5"));
+
+        gridLayout_2->addWidget(label_5, 1, 0, 1, 1);
+
+        lineEditValue = new QLineEdit(dockWidgetContents_2);
+        lineEditValue->setObjectName(QStringLiteral("lineEditValue"));
+        lineEditValue->setReadOnly(true);
+
+        gridLayout_2->addWidget(lineEditValue, 2, 1, 1, 1);
+
+        label_4 = new QLabel(dockWidgetContents_2);
+        label_4->setObjectName(QStringLiteral("label_4"));
+
+        gridLayout_2->addWidget(label_4, 0, 0, 1, 1);
+
+        lineEditX = new QLineEdit(dockWidgetContents_2);
+        lineEditX->setObjectName(QStringLiteral("lineEditX"));
+        lineEditX->setEnabled(true);
+        lineEditX->setReadOnly(true);
+
+        gridLayout_2->addWidget(lineEditX, 0, 1, 1, 1);
+
+        lineEditY = new QLineEdit(dockWidgetContents_2);
+        lineEditY->setObjectName(QStringLiteral("lineEditY"));
+        lineEditY->setReadOnly(true);
+
+        gridLayout_2->addWidget(lineEditY, 1, 1, 1, 1);
+
+        label_7 = new QLabel(dockWidgetContents_2);
+        label_7->setObjectName(QStringLiteral("label_7"));
+
+        gridLayout_2->addWidget(label_7, 3, 0, 1, 1);
+
+        lineEditDepth = new QLineEdit(dockWidgetContents_2);
+        lineEditDepth->setObjectName(QStringLiteral("lineEditDepth"));
+        lineEditDepth->setReadOnly(true);
+
+        gridLayout_2->addWidget(lineEditDepth, 3, 1, 1, 1);
+
+
+        verticalLayout_4->addLayout(gridLayout_2);
+
+        line = new QFrame(dockWidgetContents_2);
+        line->setObjectName(QStringLiteral("line"));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout_4->addWidget(line);
+
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
@@ -271,6 +351,10 @@ public:
         QTreeWidgetItem *___qtreewidgetitem = dataTreeFiles->headerItem();
         ___qtreewidgetitem->setText(0, QApplication::translate("DepthImagePlayerClass", "Files", 0));
         dockWidgetParameters->setWindowTitle(QApplication::translate("DepthImagePlayerClass", "Parameters", 0));
+        label_6->setText(QApplication::translate("DepthImagePlayerClass", "Value:", 0));
+        label_5->setText(QApplication::translate("DepthImagePlayerClass", "y:", 0));
+        label_4->setText(QApplication::translate("DepthImagePlayerClass", "x:", 0));
+        label_7->setText(QApplication::translate("DepthImagePlayerClass", "Depth(cm):", 0));
         lineEditMax->setText(QApplication::translate("DepthImagePlayerClass", "30000", 0));
         lineEditTimes->setText(QApplication::translate("DepthImagePlayerClass", "100", 0));
         label->setText(QApplication::translate("DepthImagePlayerClass", "Max:", 0));

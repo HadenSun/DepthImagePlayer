@@ -8,16 +8,20 @@ DepthImagePlayer::DepthImagePlayer(QWidget *parent)
 	//默认不启用算法，隐藏算法结果框
 	ui.lableImageRst->hide();
 
+	//图像点击事件
+	ui.labelImageOri->installEventFilter(this); //label点击事件会调用eventFilter函数
+
 	//按钮槽
 	QObject::connect(ui.actionOpen, &QAction::triggered, this, &DepthImagePlayer::open);
 	QObject::connect(ui.actionClean, &QAction::triggered, this, &DepthImagePlayer::clean);
 	QObject::connect(ui.pushButtonLast, SIGNAL(clicked()), this, SLOT(slotPushButtonLast()));
 	QObject::connect(ui.pushButtonNext, SIGNAL(clicked()), this, SLOT(slotPushButtonNext()));
 	QObject::connect(ui.pushButtonPlayAndPause, SIGNAL(clicked()), this, SLOT(slotPushButtonPlayAndPause()));
-	QObject::connect(ui.checkBoxAlgorithm, SIGNAL(stateChanged()), this, SLOT(slotAlgorithmChecked()));
+	QObject::connect(ui.checkBoxAlgorithm, SIGNAL(clicked()), this, SLOT(slotAlgorithmChecked()));
 	QObject::connect(ui.lineEditMax, SIGNAL(editingFinished()), this, SLOT(slotChangeMaxAndMinValue()));
 	QObject::connect(ui.lineEditMin, SIGNAL(editingFinished()), this, SLOT(slotChangeMaxAndMinValue()));
 	QObject::connect(ui.lineEditTimes, SIGNAL(editingFinished()), this, SLOT(slotChangeTimeValue()));
+	QObject::connect(ui.labelImageOri, SIGNAL(clicked()), this, SLOT(slotLabelClicked()));
 	//文件树相关槽
 	QObject::connect(ui.dataTreeFiles, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), this, SLOT(slotDataTreeItemSelected(QTreeWidgetItem*, int)));
 	
@@ -158,6 +162,7 @@ void DepthImagePlayer::slotDataTreeItemSelected(QTreeWidgetItem* item, int i)
 	if (img.type() != CV_16U)
 		ui.statusBar->showMessage(tr("Image is not CV_16U, may cause error!"), 3000);
 
+	matOri_uint16 = img.clone();
 	cv::Mat zip;
 	cv::Mat colorMap;
 	img.convertTo(zip, CV_8U, 256.0/(maxValue-minValue),-(double)minValue/(maxValue-minValue));	//空间压缩
@@ -174,7 +179,6 @@ void DepthImagePlayer::slotAlgorithmChecked()
 {
 	//获取选框状态
 	int state = ui.checkBoxAlgorithm->checkState();
-	qDebug() << state;
 
 
 	if (state)
@@ -224,6 +228,7 @@ void DepthImagePlayer::slotUpdateImage(cv::Mat img, int rst)
 	qDebug() << rst;
 	if (rst < 0)
 	{
+		matOri_uint16 = img.clone();
 		QObject::disconnect(&process, SIGNAL(updateImage(cv::Mat, int)), this, SLOT(slotUpdateImage(cv::Mat, int)));
 		
 		//UI异常处理
@@ -233,6 +238,7 @@ void DepthImagePlayer::slotUpdateImage(cv::Mat img, int rst)
 	}
 	qDebug() << img.type();
 	indexOfCurrentItem = rst;
+	matOri_uint16 = img;
 	cv::Mat zip;
 	cv::Mat colorMap;
 	img.convertTo(zip, CV_8U, 256.0 / (maxValue - minValue), -(double)minValue / (maxValue - minValue));	//空间压缩
@@ -240,4 +246,47 @@ void DepthImagePlayer::slotUpdateImage(cv::Mat img, int rst)
 	cv::cvtColor(colorMap, colorMap, CV_BGR2RGB);												//颜色空间转换
 	QImage qimg = QImage((const unsigned char*)(colorMap.data), colorMap.cols, colorMap.rows, QImage::Format_RGB888);
 	ui.labelImageOri->setPixmap(QPixmap::fromImage(qimg));
+}
+
+void DepthImagePlayer::slotLabelClicked()
+{
+	qDebug() << "clicked";
+}
+
+
+bool DepthImagePlayer::eventFilter(QObject* obj, QEvent* e)
+{
+	//获取鼠标点击事件
+	if (e->type() == QEvent::MouseButtonPress)
+	{
+		QMouseEvent* env = static_cast<QMouseEvent*>(e);
+		//判断事件对象
+		if (ui.labelImageOri == obj)
+		{
+			//获取坐标
+			int img_x = env->x();
+			int img_y = env->y();
+
+			//判断是否有图像
+			if (!matOri_uint16.empty())
+			{
+				ushort value = matOri_uint16.at<ushort>(img_y, img_x);
+				double depth = value * 1250.0 / 30000;
+
+				ui.lineEditX->setText(QString::number(img_x));
+				ui.lineEditY->setText(QString::number(img_y));
+				ui.lineEditValue->setText(QString::number(value));
+
+				//无效点显示
+				if (value > 30000)
+					ui.lineEditDepth->setText("NULL");
+				else
+					ui.lineEditDepth->setText(QString::number(depth));
+			}
+			
+			return true;
+		}
+	}
+
+	return false;		//其他事件不处理，继续传递
 }
