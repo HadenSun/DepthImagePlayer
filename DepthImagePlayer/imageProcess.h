@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <qthread.h>
 #include <qdebug.h>
@@ -13,25 +13,25 @@ class ImageProcess :
 public:
 	ImageProcess();
 	~ImageProcess();
-	void setTimes(uint16_t time);		//ÉèÖÃÑÓÊ±Ê±¼ä
-	bool getRunState();					//»ñÈ¡ÔËĞĞ×´Ì¬
-	void stop();						//Í£Ö¹ÔËĞĞ
-	void setFilesList(QStringList list);//ÉèÖÃÎÄ¼şÁĞ±í
-	void setDir(QString dir);			//ÉèÖÃÎÄ¼ş¼Ğ
-	void setCurrentIndex(int index);	//ÉèÖÃµ±Ç°ĞòºÅ
+	void setTimes(uint16_t time);		//è®¾ç½®å»¶æ—¶æ—¶é—´
+	bool getRunState();					//è·å–è¿è¡ŒçŠ¶æ€
+	void stop();						//åœæ­¢è¿è¡Œ
+	void setFilesList(QStringList list);//è®¾ç½®æ–‡ä»¶åˆ—è¡¨
+	void setDir(QString dir);			//è®¾ç½®æ–‡ä»¶å¤¹
+	void setCurrentIndex(int index);	//è®¾ç½®å½“å‰åºå·
 
 signals:
-	void updateImage(cv::Mat, int);		//´«ĞÂ´ò¿ªµÄÍ¼Ïñ  µ±Ç°ÎÄ¼şĞòºÅ£¨Ê§°Ü-1£©
-	void updateResult(cv::Mat, int);	//¸üĞÂËã·¨½á¹û
+	void updateImage(cv::Mat, int);		//ä¼ æ–°æ‰“å¼€çš„å›¾åƒ  å½“å‰æ–‡ä»¶åºå·ï¼ˆå¤±è´¥-1ï¼‰
+	void updateResult(cv::Mat, int);	//æ›´æ–°ç®—æ³•ç»“æœ
 
 protected:
-	void run();							//¼Ì³Ğ×ÔQThread£¬Ïß³ÌÔËĞĞº¯Êı
+	void run();							//ç»§æ‰¿è‡ªQThreadï¼Œçº¿ç¨‹è¿è¡Œå‡½æ•°
 
 private:
 	bool isRun = 0;
-	uint16_t time = 100;					//Ñ­»·ÑÓÊ±Ê±¼ä
-	QStringList files;					//ÎÄ¼şÁĞ±í
-	QString		dir;					//ÎÄ¼ş¼ĞÄ¿Â¼
-	int currentIndex = 0;			//µ±Ç°ÎÄ¼şĞòºÅ
+	uint16_t time = 100;					//å¾ªç¯å»¶æ—¶æ—¶é—´
+	QStringList files;					//æ–‡ä»¶åˆ—è¡¨
+	QString		dir;					//æ–‡ä»¶å¤¹ç›®å½•
+	int currentIndex = 0;			//å½“å‰æ–‡ä»¶åºå·
 };
 

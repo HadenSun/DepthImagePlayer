@@ -1,4 +1,4 @@
-#ifndef DEPTHIMAGEPLAYER_H
+ï»¿#ifndef DEPTHIMAGEPLAYER_H
 #define DEPTHIMAGEPLAYER_H
 
 #include <QtWidgets/QMainWindow>
@@ -30,35 +30,35 @@ public:
 	~DepthImagePlayer();
 
 public slots:
-	void slotPushButtonNext();			//ÏÂÒ»ÕÅÕÕÆ¬²Û
-	void slotPushButtonLast();			//ÉÏÒ»ÕÅÍ¼Æ¬²Û
-	void slotPushButtonPlayAndPause();	//²¥·ÅÔİÍ£²Û
-	void slotDataTreeItemSelected(QTreeWidgetItem*, int);	//ÎÄ¼şÊ÷ÔªËØ±»µã»÷²Û
-	void slotAlgorithmChecked();		//Ëã·¨¹¦ÄÜ²Û
-	void slotChangeMaxAndMinValue();	//×î´óĞ¡¾àÀë¸Ä±ä²Û
-	void slotChangeTimeValue();			//¸Ä±äµÈ´ıÊ±¼ä²Û
-	void slotLabelClicked();			//µã»÷Í¼Ïñ
-	void slotUpdateImage(cv::Mat, int);	//¸üĞÂµÃµ½µÄÍ¼Ïñ
+	void slotPushButtonNext();			//ä¸‹ä¸€å¼ ç…§ç‰‡æ§½
+	void slotPushButtonLast();			//ä¸Šä¸€å¼ å›¾ç‰‡æ§½
+	void slotPushButtonPlayAndPause();	//æ’­æ”¾æš‚åœæ§½
+	void slotDataTreeItemSelected(QTreeWidgetItem*, int);	//æ–‡ä»¶æ ‘å…ƒç´ è¢«ç‚¹å‡»æ§½
+	void slotAlgorithmChecked();		//ç®—æ³•åŠŸèƒ½æ§½
+	void slotChangeMaxAndMinValue();	//æœ€å¤§å°è·ç¦»æ”¹å˜æ§½
+	void slotChangeTimeValue();			//æ”¹å˜ç­‰å¾…æ—¶é—´æ§½
+	void slotLabelClicked();			//ç‚¹å‡»å›¾åƒ
+	void slotUpdateImage(cv::Mat, int);	//æ›´æ–°å¾—åˆ°çš„å›¾åƒ
 	
 
 protected:
-	bool eventFilter(QObject *, QEvent *);	//¹ıÂËÍ¼Æ¬labelµã»÷ÊÂ¼ş£¬»ñÈ¡×ø±êÎ»ÖÃ
+	bool eventFilter(QObject *, QEvent *);	//è¿‡æ»¤å›¾ç‰‡labelç‚¹å‡»äº‹ä»¶ï¼Œè·å–åæ ‡ä½ç½®
 
 
 private:
 	Ui::DepthImagePlayerClass ui;
-	cv::Mat matOri_uint16;				//´æ´¢¶ÁÈ¡µ½µÄÔ­Ê¼Í¼Ïñ£¬CV_16UC1ÀàĞÍ
-	QString fileDir;					//ÎÄ¼ş¼ĞÂ·¾¶
-	int indexOfCurrentItem = 0;	//´æ´¢µ±Ç°ÎÄ¼şÔÚÎÄ¼şÊ÷ÖĞÎ»ÖÃ
+	cv::Mat matOri_uint16;				//å­˜å‚¨è¯»å–åˆ°çš„åŸå§‹å›¾åƒï¼ŒCV_16UC1ç±»å‹
+	QString fileDir;					//æ–‡ä»¶å¤¹è·¯å¾„
+	int indexOfCurrentItem = 0;	//å­˜å‚¨å½“å‰æ–‡ä»¶åœ¨æ–‡ä»¶æ ‘ä¸­ä½ç½®
 	QTreeWidgetItem* currentItem = NULL;	
 	ImageProcess process;
-	bool runState = 0;					//²¥·Å×´Ì¬
-	uint16_t maxValue = 30000;			//Î±²ÊÉ«±ä»»·¶Î§
+	bool runState = 0;					//æ’­æ”¾çŠ¶æ€
+	uint16_t maxValue = 30000;			//ä¼ªå½©è‰²å˜æ¢èŒƒå›´
 	uint16_t minValue = 0;					
 
 
-	void open();		//´ò¿ªÎÄ¼ş¼Ğ
-	void clean();		//Çå¿ÕÎÄ¼ş¼Ğ
+	void open();		//æ‰“å¼€æ–‡ä»¶å¤¹
+	void clean();		//æ¸…ç©ºæ–‡ä»¶å¤¹
 
 };
 

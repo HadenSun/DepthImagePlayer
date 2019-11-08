@@ -1,17 +1,17 @@
-#include "depthimageplayer.h"
+ï»¿#include "depthimageplayer.h"
 
 DepthImagePlayer::DepthImagePlayer(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
 
-	//Ä¬ÈÏ²»ÆôÓÃËã·¨£¬Òş²ØËã·¨½á¹û¿ò
+	//é»˜è®¤ä¸å¯ç”¨ç®—æ³•ï¼Œéšè—ç®—æ³•ç»“æœæ¡†
 	ui.lableImageRst->hide();
 
-	//Í¼Ïñµã»÷ÊÂ¼ş
-	ui.labelImageOri->installEventFilter(this); //labelµã»÷ÊÂ¼ş»áµ÷ÓÃeventFilterº¯Êı
+	//å›¾åƒç‚¹å‡»äº‹ä»¶
+	ui.labelImageOri->installEventFilter(this); //labelç‚¹å‡»äº‹ä»¶ä¼šè°ƒç”¨eventFilterå‡½æ•°
 
-	//°´Å¥²Û
+	//æŒ‰é’®æ§½
 	QObject::connect(ui.actionOpen, &QAction::triggered, this, &DepthImagePlayer::open);
 	QObject::connect(ui.actionClean, &QAction::triggered, this, &DepthImagePlayer::clean);
 	QObject::connect(ui.pushButtonLast, SIGNAL(clicked()), this, SLOT(slotPushButtonLast()));
@@ -22,7 +22,7 @@ DepthImagePlayer::DepthImagePlayer(QWidget *parent)
 	QObject::connect(ui.lineEditMin, SIGNAL(editingFinished()), this, SLOT(slotChangeMaxAndMinValue()));
 	QObject::connect(ui.lineEditTimes, SIGNAL(editingFinished()), this, SLOT(slotChangeTimeValue()));
 	QObject::connect(ui.labelImageOri, SIGNAL(clicked()), this, SLOT(slotLabelClicked()));
-	//ÎÄ¼şÊ÷Ïà¹Ø²Û
+	//æ–‡ä»¶æ ‘ç›¸å…³æ§½
 	QObject::connect(ui.dataTreeFiles, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), this, SLOT(slotDataTreeItemSelected(QTreeWidgetItem*, int)));
 	
 
@@ -36,15 +36,15 @@ DepthImagePlayer::~DepthImagePlayer()
 
 void DepthImagePlayer::open()
 {
-	bool flag = 0;	//±ê¼ÇÊÇ·ñÒÑ¾­ÓĞÎÄ¼ş¼Ğ´ò¿ª
+	bool flag = 0;	//æ ‡è®°æ˜¯å¦å·²ç»æœ‰æ–‡ä»¶å¤¹æ‰“å¼€
 	if (!fileDir.isEmpty())
 		flag = 1;
 
 	QString dirfile = QFileDialog::getExistingDirectory(this, tr("Open files dir"));
 	if (dirfile.isEmpty())
-		return;		//Ã»ÓĞÑ¡ÔñÎÄ¼ş¼Ğ£¬Ö±½Ó½áÊø
+		return;		//æ²¡æœ‰é€‰æ‹©æ–‡ä»¶å¤¹ï¼Œç›´æ¥ç»“æŸ
 
-	//Èç¹ûÒÑ¾­ÓĞÎÄ¼ş¼Ğ´ò¿ª£¬ÏÈÇå¿Õ
+	//å¦‚æœå·²ç»æœ‰æ–‡ä»¶å¤¹æ‰“å¼€ï¼Œå…ˆæ¸…ç©º
 	if (flag)
 	{
 		clean();
@@ -52,18 +52,18 @@ void DepthImagePlayer::open()
 
 	fileDir = dirfile;
 
-	//´ò¿ªÎÄ¼ş¼Ğ
+	//æ‰“å¼€æ–‡ä»¶å¤¹
 	QDir dir(fileDir);
-	QStringList filter;		//´´½¨¹ıÂËÆ÷
+	QStringList filter;		//åˆ›å»ºè¿‡æ»¤å™¨
 	filter << "*.png";
 	QStringList files = dir.entryList(filter, QDir::Files | QDir::Readable, QDir::Name);
 
-	//ÉèÖÃÏß³ÌÀà
+	//è®¾ç½®çº¿ç¨‹ç±»
 	process.setDir(fileDir);
 	process.setFilesList(files);
 
 
-	//¸üĞÂ×ÊÔ´Ê÷
+	//æ›´æ–°èµ„æºæ ‘
 	for (int i = 0; i < files.size(); i++)
 	{
 		QString name = files.at(i);
@@ -71,7 +71,7 @@ void DepthImagePlayer::open()
 		ui.dataTreeFiles->addTopLevelItem(child);
 	}
 
-	//×´Ì¬À¸ÏÔÊ¾½á¹û
+	//çŠ¶æ€æ æ˜¾ç¤ºç»“æœ
 	ui.statusBar->showMessage(tr("Open ") + fileDir, 3000);
 
 }
@@ -81,17 +81,17 @@ void DepthImagePlayer::clean()
 	fileDir.clear();
 	ui.dataTreeFiles->clear();
 
-	//×´Ì¬À¸ÏÔÊ¾½á¹û
+	//çŠ¶æ€æ æ˜¾ç¤ºç»“æœ
 	ui.statusBar->showMessage(tr("Clean"), 3000);
 }
 
 void DepthImagePlayer::slotPushButtonLast()
 {
 	if (fileDir.isEmpty())
-		return;		//Èç¹ûÃ»ÓĞ¿ªÎÄ¼ş¼Ğ
+		return;		//å¦‚æœæ²¡æœ‰å¼€æ–‡ä»¶å¤¹
 
 	if (indexOfCurrentItem == 0)
-		return;		//µ±Ç°ÒÑ¾­ÊÇµÚÒ»ÕÅ
+		return;		//å½“å‰å·²ç»æ˜¯ç¬¬ä¸€å¼ 
 	
 	if (currentItem == NULL)
 		return;
@@ -103,10 +103,10 @@ void DepthImagePlayer::slotPushButtonLast()
 void DepthImagePlayer::slotPushButtonNext()
 {
 	if (fileDir.isEmpty())
-		return;		//Èç¹ûÃ»ÓĞ¿ªÎÄ¼ş¼Ğ
+		return;		//å¦‚æœæ²¡æœ‰å¼€æ–‡ä»¶å¤¹
 
 	if (indexOfCurrentItem == 0)
-		return;		//µ±Ç°ÒÑ¾­ÊÇµÚÒ»ÕÅ
+		return;		//å½“å‰å·²ç»æ˜¯ç¬¬ä¸€å¼ 
 
 	if (currentItem == NULL)
 		return;
@@ -118,33 +118,33 @@ void DepthImagePlayer::slotPushButtonNext()
 void DepthImagePlayer::slotPushButtonPlayAndPause()
 {
 	if (fileDir.isEmpty())
-		return;		//Èç¹ûÃ»ÓĞ¿ªÎÄ¼ş¼Ğ
+		return;		//å¦‚æœæ²¡æœ‰å¼€æ–‡ä»¶å¤¹
 
 	if (indexOfCurrentItem == 0)
-		return;		//µ±Ç°ÒÑ¾­ÊÇµÚÒ»ÕÅ
+		return;		//å½“å‰å·²ç»æ˜¯ç¬¬ä¸€å¼ 
 
-	//TODO ×Ô¶¯´ÓµÚÒ»ÕÅ²¥·Å
+	//TODO è‡ªåŠ¨ä»ç¬¬ä¸€å¼ æ’­æ”¾
 	if (currentItem == NULL)
 		return;
 
 	if (process.getRunState())
 	{
-		//ÕıÔÚÔËĞĞ£¬Í£Ö¹
+		//æ­£åœ¨è¿è¡Œï¼Œåœæ­¢
 		process.stop();
 		QObject::disconnect(&process, SIGNAL(updateImage(cv::Mat, int)), this, SLOT(slotUpdateImage(cv::Mat, int)));
 
-		//UI½çÃæ´¦Àí
+		//UIç•Œé¢å¤„ç†
 		ui.pushButtonPlayAndPause->setIcon(QIcon(":/DepthImagePlayer/Resources/icon/play.png"));
 	}
 	else
 	{
-		//Í¼Ïñ¸üĞÂ²Û
+		//å›¾åƒæ›´æ–°æ§½
 		QObject::connect(&process, SIGNAL(updateImage(cv::Mat, int)), this, SLOT(slotUpdateImage(cv::Mat, int)));
 
-		//UI½çÃæ¸üĞÂ
+		//UIç•Œé¢æ›´æ–°
 		ui.pushButtonPlayAndPause->setIcon(QIcon(":/DepthImagePlayer/Resources/icon/pause.png"));
 
-		//Æô¶¯×¼±¸
+		//å¯åŠ¨å‡†å¤‡
 		process.setCurrentIndex(indexOfCurrentItem);
 		process.start();
 	}
@@ -157,7 +157,7 @@ void DepthImagePlayer::slotDataTreeItemSelected(QTreeWidgetItem* item, int i)
 	indexOfCurrentItem = ui.dataTreeFiles->indexOfTopLevelItem(item);
 	currentItem = item;
 
-	//¼ÓÔØÍ¼Æ¬
+	//åŠ è½½å›¾ç‰‡
 	cv::Mat img = cv::imread(imageName.toLocal8Bit().toStdString(), CV_LOAD_IMAGE_ANYCOLOR | CV_LOAD_IMAGE_ANYDEPTH);
 	if (img.type() != CV_16U)
 		ui.statusBar->showMessage(tr("Image is not CV_16U, may cause error!"), 3000);
@@ -165,48 +165,48 @@ void DepthImagePlayer::slotDataTreeItemSelected(QTreeWidgetItem* item, int i)
 	matOri_uint16 = img.clone();
 	cv::Mat zip;
 	cv::Mat colorMap;
-	img.convertTo(zip, CV_8U, 256.0/(maxValue-minValue),-(double)minValue/(maxValue-minValue));	//¿Õ¼äÑ¹Ëõ
-	cv::applyColorMap(zip, colorMap, cv::COLORMAP_JET);											//Î±²ÊÉ«»¯
-	cv::cvtColor(colorMap, colorMap, CV_BGR2RGB);												//ÑÕÉ«¿Õ¼ä×ª»»
+	img.convertTo(zip, CV_8U, 256.0/(maxValue-minValue),-(double)minValue/(maxValue-minValue));	//ç©ºé—´å‹ç¼©
+	cv::applyColorMap(zip, colorMap, cv::COLORMAP_JET);											//ä¼ªå½©è‰²åŒ–
+	cv::cvtColor(colorMap, colorMap, CV_BGR2RGB);												//é¢œè‰²ç©ºé—´è½¬æ¢
 	QImage qimg = QImage((const unsigned char*)(colorMap.data), colorMap.cols, colorMap.rows, QImage::Format_RGB888);
 	ui.labelImageOri->setPixmap(QPixmap::fromImage(qimg));
 
-	//×´Ì¬À¸¸üĞÂ
+	//çŠ¶æ€æ æ›´æ–°
 	ui.statusBar->showMessage(tr("Open ") + imageName, 3000);
 }
 
 void DepthImagePlayer::slotAlgorithmChecked()
 {
-	//»ñÈ¡Ñ¡¿ò×´Ì¬
+	//è·å–é€‰æ¡†çŠ¶æ€
 	int state = ui.checkBoxAlgorithm->checkState();
 
 
 	if (state)
 	{
-		//ÆôÓÃ
+		//å¯ç”¨
 		ui.lableImageRst->show();
-		//TODO processÉèÖÃ
+		//TODO processè®¾ç½®
 	}
 	else
 	{
-		//²»ÆôÓÃ
+		//ä¸å¯ç”¨
 		ui.lableImageRst->hide();
-		//TODO processÉèÖÃ
+		//TODO processè®¾ç½®
 	}
 }
 
 void DepthImagePlayer::slotChangeMaxAndMinValue()
 {
-	//»ñÈ¡½á¹û
+	//è·å–ç»“æœ
 	maxValue = ui.lineEditMax->text().toUShort();
 	minValue = ui.lineEditMin->text().toUShort();
 
-	//·ÀÖ¹Òì³£
+	//é˜²æ­¢å¼‚å¸¸
 	ui.lineEditMax->setText(QString::number(maxValue));
 	ui.lineEditMin->setText(QString::number(minValue));
 
-	//Èç¹ûÃ»ÓĞÔÚ²¥·Å
-	//ÖØĞÂ¼ÓÔØÒ»ÏÂµ±Ç°Í¼Æ¬
+	//å¦‚æœæ²¡æœ‰åœ¨æ’­æ”¾
+	//é‡æ–°åŠ è½½ä¸€ä¸‹å½“å‰å›¾ç‰‡
 	if (!process.getRunState())
 	{
 		slotDataTreeItemSelected(currentItem, 0);
@@ -219,7 +219,7 @@ void DepthImagePlayer::slotChangeTimeValue()
 	uint16_t time = ui.lineEditTimes->text().toUShort();
 	ui.lineEditTimes->setText(QString::number(time));
 
-	//ÉèÖÃÑÓÊ±
+	//è®¾ç½®å»¶æ—¶
 	process.setTimes(time);
 }
 
@@ -231,7 +231,7 @@ void DepthImagePlayer::slotUpdateImage(cv::Mat img, int rst)
 		matOri_uint16 = img.clone();
 		QObject::disconnect(&process, SIGNAL(updateImage(cv::Mat, int)), this, SLOT(slotUpdateImage(cv::Mat, int)));
 		
-		//UIÒì³£´¦Àí
+		//UIå¼‚å¸¸å¤„ç†
 		ui.pushButtonPlayAndPause->setIcon(QIcon(":/DepthImagePlayer/Resources/icon/play.png"));
 			
 		return;
@@ -241,9 +241,9 @@ void DepthImagePlayer::slotUpdateImage(cv::Mat img, int rst)
 	matOri_uint16 = img;
 	cv::Mat zip;
 	cv::Mat colorMap;
-	img.convertTo(zip, CV_8U, 256.0 / (maxValue - minValue), -(double)minValue / (maxValue - minValue));	//¿Õ¼äÑ¹Ëõ
-	cv::applyColorMap(zip, colorMap, cv::COLORMAP_JET);											//Î±²ÊÉ«»¯
-	cv::cvtColor(colorMap, colorMap, CV_BGR2RGB);												//ÑÕÉ«¿Õ¼ä×ª»»
+	img.convertTo(zip, CV_8U, 256.0 / (maxValue - minValue), -(double)minValue / (maxValue - minValue));	//ç©ºé—´å‹ç¼©
+	cv::applyColorMap(zip, colorMap, cv::COLORMAP_JET);											//ä¼ªå½©è‰²åŒ–
+	cv::cvtColor(colorMap, colorMap, CV_BGR2RGB);												//é¢œè‰²ç©ºé—´è½¬æ¢
 	QImage qimg = QImage((const unsigned char*)(colorMap.data), colorMap.cols, colorMap.rows, QImage::Format_RGB888);
 	ui.labelImageOri->setPixmap(QPixmap::fromImage(qimg));
 }
@@ -256,18 +256,18 @@ void DepthImagePlayer::slotLabelClicked()
 
 bool DepthImagePlayer::eventFilter(QObject* obj, QEvent* e)
 {
-	//»ñÈ¡Êó±êµã»÷ÊÂ¼ş
+	//è·å–é¼ æ ‡ç‚¹å‡»äº‹ä»¶
 	if (e->type() == QEvent::MouseButtonPress)
 	{
 		QMouseEvent* env = static_cast<QMouseEvent*>(e);
-		//ÅĞ¶ÏÊÂ¼ş¶ÔÏó
+		//åˆ¤æ–­äº‹ä»¶å¯¹è±¡
 		if (ui.labelImageOri == obj)
 		{
-			//»ñÈ¡×ø±ê
+			//è·å–åæ ‡
 			int img_x = env->x();
 			int img_y = env->y();
 
-			//ÅĞ¶ÏÊÇ·ñÓĞÍ¼Ïñ
+			//åˆ¤æ–­æ˜¯å¦æœ‰å›¾åƒ
 			if (!matOri_uint16.empty())
 			{
 				ushort value = matOri_uint16.at<ushort>(img_y, img_x);
@@ -277,7 +277,7 @@ bool DepthImagePlayer::eventFilter(QObject* obj, QEvent* e)
 				ui.lineEditY->setText(QString::number(img_y));
 				ui.lineEditValue->setText(QString::number(value));
 
-				//ÎŞĞ§µãÏÔÊ¾
+				//æ— æ•ˆç‚¹æ˜¾ç¤º
 				if (value > 30000)
 					ui.lineEditDepth->setText("NULL");
 				else
@@ -288,5 +288,5 @@ bool DepthImagePlayer::eventFilter(QObject* obj, QEvent* e)
 		}
 	}
 
-	return false;		//ÆäËûÊÂ¼ş²»´¦Àí£¬¼ÌĞø´«µİ
+	return false;		//å…¶ä»–äº‹ä»¶ä¸å¤„ç†ï¼Œç»§ç»­ä¼ é€’
 }

@@ -1,4 +1,4 @@
-#include "imageProcess.h"
+ï»¿#include "imageProcess.h"
 
 
 ImageProcess::ImageProcess()
@@ -20,15 +20,15 @@ void ImageProcess::run()
 		qDebug() << "run...";
 		currentIndex++;
 
-		//¼ì²éÊÇ·ñµ½×îºó
+		//æ£€æŸ¥æ˜¯å¦åˆ°æœ€åŽ
 		if (currentIndex < files.size())
 		{
-			//´ò¿ªÎÄ¼þ
+			//æ‰“å¼€æ–‡ä»¶
 			QString fileFullName = dir + "/" + files.at(currentIndex);
 			cv::Mat img = cv::imread(fileFullName.toLocal8Bit().toStdString(), CV_LOAD_IMAGE_ANYCOLOR | CV_LOAD_IMAGE_ANYDEPTH);
 
 
-			//TODO Ìí¼ÓËã·¨´úÂëÔÚÕâÀï
+			//TODO æ·»åŠ ç®—æ³•ä»£ç åœ¨è¿™é‡Œ
 
 
 
@@ -38,13 +38,13 @@ void ImageProcess::run()
 		{
 			currentIndex = 0;
 			cv::Mat img;	
-			isRun = 0;		//Ö÷¶¯Í£Ö¹
+			isRun = 0;		//ä¸»åŠ¨åœæ­¢
 
 			emit updateImage(img, -1);
 		}
 		
 
-		//´¦ÀíÍêÑÓÊ±
+		//å¤„ç†å®Œå»¶æ—¶
 		if (time)
 			usleep(time * 1000);
 	}
