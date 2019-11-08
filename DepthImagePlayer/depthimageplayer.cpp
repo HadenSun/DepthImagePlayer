@@ -3,8 +3,7 @@
 * @brief The main UI handle function.
 * @details Include the function handle the UI action.
 * @mainpage DetpthImagePlayer
-* @author Oliver Sun
-* @email admin@sunhx.cn
+* @author Oliver admin@sunhx.cn
 * @version 1.0.0
 * @date 2019-11-8
 */
@@ -147,7 +146,7 @@ void DepthImagePlayer::slotPushButtonLast()
 		return;
 
 	QTreeWidgetItem* item = ui.dataTreeFiles->itemAbove(currentItem);	
-	slotDataTreeItemSelected(item,0);
+	slotDataTreeItemSelected(item, 0);
 }
 
 /**
@@ -163,8 +162,8 @@ void DepthImagePlayer::slotPushButtonNext()
 	if (fileDir.isEmpty())
 		return;		//如果没有开文件夹
 
-	if (indexOfCurrentItem == 0)
-		return;		//当前已经是第一张
+	if (indexOfCurrentItem >= ui.dataTreeFiles->topLevelItemCount())
+		return;		//当前已经是最后一张
 
 	if (currentItem == NULL)
 		return;
@@ -186,8 +185,8 @@ void DepthImagePlayer::slotPushButtonPlayAndPause()
 	if (fileDir.isEmpty())
 		return;		//如果没有开文件夹
 
-	if (indexOfCurrentItem == 0)
-		return;		//当前已经是第一张
+	if (indexOfCurrentItem >= ui.dataTreeFiles->topLevelItemCount())
+		return;		//当前已经是最后一张
 
 	//TODO 自动从第一张播放
 	if (currentItem == NULL)
@@ -231,6 +230,7 @@ void DepthImagePlayer::slotDataTreeItemSelected(QTreeWidgetItem* item, int i)
 	QString imageName = fileDir + "/"+item->text(0);
 	indexOfCurrentItem = ui.dataTreeFiles->indexOfTopLevelItem(item);
 	currentItem = item;
+	ui.dataTreeFiles->setCurrentItem(item);
 
 	//加载图片
 	cv::Mat img = cv::imread(imageName.toLocal8Bit().toStdString(), CV_LOAD_IMAGE_ANYCOLOR | CV_LOAD_IMAGE_ANYDEPTH);
@@ -238,10 +238,10 @@ void DepthImagePlayer::slotDataTreeItemSelected(QTreeWidgetItem* item, int i)
 		ui.statusBar->showMessage(tr("Image is not CV_16U, may cause error!"), 3000);
 
 	matOri_uint16 = img.clone();
-	cv::Mat zip;
+
+	//图片显示
 	cv::Mat colorMap;
-	img.convertTo(zip, CV_8U, 256.0/(maxValue-minValue),-(double)minValue/(maxValue-minValue));	//空间压缩
-	cv::applyColorMap(zip, colorMap, cv::COLORMAP_JET);											//伪彩色化
+	colorMap = myConvertToColormap(img);
 	cv::cvtColor(colorMap, colorMap, CV_BGR2RGB);												//颜色空间转换
 	QImage qimg = QImage((const unsigned char*)(colorMap.data), colorMap.cols, colorMap.rows, QImage::Format_RGB888);
 	ui.labelImageOri->setPixmap(QPixmap::fromImage(qimg));
@@ -333,9 +333,10 @@ void DepthImagePlayer::slotChangeTimeValue()
 */
 void DepthImagePlayer::slotUpdateImage(cv::Mat img, int rst)
 {
-	qDebug() << rst;
+	
 	if (rst < 0)
 	{
+		process.stop();
 		matOri_uint16 = img.clone();
 		QObject::disconnect(&process, SIGNAL(updateImage(cv::Mat, int)), this, SLOT(slotUpdateImage(cv::Mat, int)));
 		
@@ -344,13 +345,16 @@ void DepthImagePlayer::slotUpdateImage(cv::Mat img, int rst)
 			
 		return;
 	}
-	qDebug() << img.type();
+	
+	QTreeWidgetItem *item = ui.dataTreeFiles->topLevelItem(rst);
 	indexOfCurrentItem = rst;
+	currentItem = item;
 	matOri_uint16 = img;
-	cv::Mat zip;
+	ui.dataTreeFiles->setCurrentItem(item);
+
+	//图片显示
 	cv::Mat colorMap;
-	img.convertTo(zip, CV_8U, 256.0 / (maxValue - minValue), -(double)minValue / (maxValue - minValue));	//空间压缩
-	cv::applyColorMap(zip, colorMap, cv::COLORMAP_JET);											//伪彩色化
+	colorMap = myConvertToColormap(img);
 	cv::cvtColor(colorMap, colorMap, CV_BGR2RGB);												//颜色空间转换
 	QImage qimg = QImage((const unsigned char*)(colorMap.data), colorMap.cols, colorMap.rows, QImage::Format_RGB888);
 	ui.labelImageOri->setPixmap(QPixmap::fromImage(qimg));
@@ -400,4 +404,109 @@ bool DepthImagePlayer::eventFilter(QObject* obj, QEvent* e)
 	}
 
 	return false;		//其他事件不处理，继续传递
+}
+
+
+/**
+* @brief 伪彩色转换
+* @details 将原始图像压缩成伪彩色图像
+*
+* @param src CV_16UC1类型Mat图像
+* @return CV_8UC1类型Mat图像
+*/
+cv::Mat DepthImagePlayer::myConvertToColormap(cv::Mat src)
+{
+	//检查输入Mat格式
+	if (src.type() != CV_16UC1)
+		return cv::Mat();
+
+	cv::Mat img_color = cv::Mat(src.size(), CV_8UC3, cv::Scalar(0, 0, 0));
+	cv::Mat depthzip = src.clone();
+	double interdepth = 894.0 / (maxValue - minValue);
+
+	for (int i = 0; i < 240; i++)
+	{
+		for (int j = 0; j < 320; j++)
+		{
+			if (depthzip.at<ushort>(i, j) == SATURATION_V26)
+			{
+				//无效点
+				IMG_B(img_color, i, j) = 0;	//128
+				IMG_G(img_color, i, j) = 0;
+				IMG_R(img_color, i, j) = 0;	//255
+				continue;
+			}
+			else if (depthzip.at<ushort>(i, j) == LOW_AMPLITUDE_V26)
+			{
+				//饱和点
+				IMG_B(img_color, i, j) = 0;	//255
+				IMG_G(img_color, i, j) = 0;	//14
+				IMG_R(img_color, i, j) = 0;	//169
+				continue;
+			}
+			else if (depthzip.at<ushort>(i, j) == ADC_OVERFLOW_V26)
+			{
+				//过曝点
+				IMG_B(img_color, i, j) = 0;
+				IMG_G(img_color, i, j) = 0;
+				IMG_R(img_color, i, j) = 0;
+				continue;
+			}
+
+
+			//超出范围的点处理
+			if (depthzip.at<ushort>(i, j) > maxValue)
+			{
+				IMG_R(img_color, i, j) = 0;
+				IMG_G(img_color, i, j) = 0;
+				IMG_B(img_color, i, j) = 0;
+				continue;
+			}
+			else if (depthzip.at<ushort>(i, j) < minValue)
+			{
+				IMG_R(img_color, i, j) = 0;
+				IMG_G(img_color, i, j) = 0;
+				IMG_B(img_color, i, j) = 0;
+				continue;
+			}
+
+			//正常点缩放
+			unsigned short img_tmp = (ushort)((depthzip.at<ushort>(i, j) - minValue)*interdepth);
+			if (img_tmp < 64)
+			{
+				IMG_R(img_color, i, j) = 191 + img_tmp;
+				IMG_G(img_color, i, j) = img_tmp;
+				IMG_B(img_color, i, j) = 0;
+			}
+			else if (img_tmp < 255)
+			{
+				IMG_R(img_color, i, j) = 255;
+				IMG_G(img_color, i, j) = img_tmp;
+				IMG_B(img_color, i, j) = 0;
+			}
+			else if (img_tmp < 510)
+			{
+				img_tmp -= 255;
+				IMG_B(img_color, i, j) = img_tmp;
+				IMG_G(img_color, i, j) = 255;
+				IMG_R(img_color, i, j) = 255 - img_tmp;
+			}
+			else if (img_tmp < 765)
+			{
+				img_tmp -= 510;
+				IMG_B(img_color, i, j) = 255;
+				IMG_G(img_color, i, j) = 255 - img_tmp;
+				IMG_R(img_color, i, j) = 0;
+			}
+			else
+			{
+				img_tmp -= 765;
+				IMG_B(img_color, i, j) = 255 - img_tmp;
+				IMG_G(img_color, i, j) = 0;
+				IMG_R(img_color, i, j) = 0;
+			}
+		}
+	}
+
+	return img_color.clone();
 }

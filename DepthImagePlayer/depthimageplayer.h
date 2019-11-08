@@ -22,9 +22,18 @@
 #include "imageProcess.h"
 
 
+
+#define LOW_AMPLITUDE_V26 	32500   ///<强度过低值
+#define SATURATION_V26		32600	///<饱和值
+#define ADC_OVERFLOW_V26	32700	///<ADC过曝
+
+#define IMG_B(img,y,x) img.at<cv::Vec3b>(y,x)[0]	
+#define IMG_G(img,y,x) img.at<cv::Vec3b>(y,x)[1]
+#define IMG_R(img,y,x) img.at<cv::Vec3b>(y,x)[2]
+
 /**
-* @brief 类的简单概述
-* 类的详细概述
+* @brief UI类
+* @details 负责UI处理和相关业务逻辑
 */
 class DepthImagePlayer : public QMainWindow
 {
@@ -63,7 +72,7 @@ private:
 
 	void open();		//打开文件夹
 	void clean();		//清空文件夹
-
+	cv::Mat myConvertToColormap(cv::Mat src);	//伪彩色转换
 };
 
 #endif // DEPTHIMAGEPLAYER_H

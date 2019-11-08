@@ -1,4 +1,14 @@
-﻿#include "imageProcess.h"
+﻿/**
+* @file imageProcess.cpp
+* @brief New thread for open image continue.
+* @details Handle for image open continuly and leave a port for running algorithm.
+* @mainpage ImageProcess
+* @author Oliver admin@sunhx.cn
+* @version 1.0.0
+* @date 2019-11-8
+*/
+
+#include "imageProcess.h"
 
 
 ImageProcess::ImageProcess()
@@ -17,7 +27,6 @@ void ImageProcess::run()
 
 	while (isRun)
 	{
-		qDebug() << "run...";
 		currentIndex++;
 
 		//检查是否到最后

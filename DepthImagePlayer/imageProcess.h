@@ -1,4 +1,14 @@
-﻿#pragma once
+﻿/**
+* @file imageProcess.h
+* @brief New thread for open image continue.
+* @details Handle for image open continuly and leave a port for running algorithm.
+* @mainpage ImageProcess
+* @author Oliver admin@sunhx.cn
+* @version 1.0.0
+* @date 2019-11-8
+*/
+
+#pragma once
 
 #include <qthread.h>
 #include <qdebug.h>
@@ -7,8 +17,8 @@
 
 
 /**
-* @brief 类的简单概述
-* 类的详细概述
+* @brief 线程类
+* @details 负责图片连续读取，为运行算法提供接口。
 */
 class ImageProcess :
 	public QThread
