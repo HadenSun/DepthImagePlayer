@@ -21,6 +21,11 @@
 
 #include "imageProcess.h"
 
+
+/**
+* @brief 类的简单概述
+* 类的详细概述
+*/
 class DepthImagePlayer : public QMainWindow
 {
 	Q_OBJECT
@@ -37,7 +42,6 @@ public slots:
 	void slotAlgorithmChecked();		//算法功能槽
 	void slotChangeMaxAndMinValue();	//最大小距离改变槽
 	void slotChangeTimeValue();			//改变等待时间槽
-	void slotLabelClicked();			//点击图像
 	void slotUpdateImage(cv::Mat, int);	//更新得到的图像
 	
 

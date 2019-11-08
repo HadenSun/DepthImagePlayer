@@ -1,5 +1,24 @@
-﻿#include "depthimageplayer.h"
+﻿/**
+* @file depthimageplayer.cpp
+* @brief The main UI handle function.
+* @details Include the function handle the UI action.
+* @mainpage DetpthImagePlayer
+* @author Oliver Sun
+* @email admin@sunhx.cn
+* @version 1.0.0
+* @date 2019-11-8
+*/
 
+#include "depthimageplayer.h"
+
+/**
+* @brief 构造函数
+* @details 完成UI界面初始化和信号槽的连接
+*
+* @param parent 父类指针
+* @return void
+* @note
+*/
 DepthImagePlayer::DepthImagePlayer(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -28,12 +47,27 @@ DepthImagePlayer::DepthImagePlayer(QWidget *parent)
 
 }
 
+/**
+* @brief 析构函数
+* @details 类析构时调用
+*
+* @param void
+* @return void
+* @note
+*/
 DepthImagePlayer::~DepthImagePlayer()
 {
 
 }
 
-
+/**
+* @brief 打开文件夹
+* @details 根据用户选择打开文件夹，并将文件夹内png图片在文件树中显示
+*
+* @param void
+* @return void
+* @note 暂时没有考虑文件量比较大的情况下打开慢的问题
+*/
 void DepthImagePlayer::open()
 {
 	bool flag = 0;	//标记是否已经有文件夹打开
@@ -76,6 +110,14 @@ void DepthImagePlayer::open()
 
 }
 
+/**
+* @brief 清除文件树区域
+* @details 回到启动初始状态
+*
+* @param void
+* @return void
+* @note 
+*/
 void DepthImagePlayer::clean()
 {
 	fileDir.clear();
@@ -85,6 +127,14 @@ void DepthImagePlayer::clean()
 	ui.statusBar->showMessage(tr("Clean"), 3000);
 }
 
+/**
+* @brief 上一幅图像按钮按下槽
+* @details 加载上一幅图像并在界面上显示
+*
+* @param void
+* @return void
+* @note 
+*/
 void DepthImagePlayer::slotPushButtonLast()
 {
 	if (fileDir.isEmpty())
@@ -100,6 +150,14 @@ void DepthImagePlayer::slotPushButtonLast()
 	slotDataTreeItemSelected(item,0);
 }
 
+/**
+* @brief 下一幅图像按钮按下槽
+* @details 加载下一幅图像并在界面上显示
+*
+* @param void
+* @return void
+* @note 
+*/
 void DepthImagePlayer::slotPushButtonNext()
 {
 	if (fileDir.isEmpty())
@@ -115,6 +173,14 @@ void DepthImagePlayer::slotPushButtonNext()
 	slotDataTreeItemSelected(item, 0);
 }
 
+/**
+* @brief 播放暂停按钮按下槽
+* @details 开启子线程负责循环读取图片文件，暂停文件读取。
+*
+* @param void
+* @return void
+* @note 
+*/
 void DepthImagePlayer::slotPushButtonPlayAndPause()
 {
 	if (fileDir.isEmpty())
@@ -151,6 +217,15 @@ void DepthImagePlayer::slotPushButtonPlayAndPause()
 
 }
 
+/**
+* @brief 文件树元素双击相应槽
+* @details 获取双击的文件树元素，打开并显示图片文件，并存标记为当前元素。
+*
+* @param item 双击元素的指针
+* @param i 第i列元素
+* @return void
+* @note 
+*/
 void DepthImagePlayer::slotDataTreeItemSelected(QTreeWidgetItem* item, int i)
 {
 	QString imageName = fileDir + "/"+item->text(0);
@@ -175,6 +250,14 @@ void DepthImagePlayer::slotDataTreeItemSelected(QTreeWidgetItem* item, int i)
 	ui.statusBar->showMessage(tr("Open ") + imageName, 3000);
 }
 
+/**
+* @brief 算法复选框点击槽
+* @details 通知子线程，在循环读取的时候是否要调用相应算法类
+*
+* @param void
+* @return void
+* @note 暂时没有考虑单张读取时的算法调用
+*/
 void DepthImagePlayer::slotAlgorithmChecked()
 {
 	//获取选框状态
@@ -195,6 +278,14 @@ void DepthImagePlayer::slotAlgorithmChecked()
 	}
 }
 
+/**
+* @brief 改变伪彩色变换时范围的最大最小值
+* @details 深度图像转为伪彩色图像时需要进行深度缩放，value = (depth - min) / (max - min) * 255。
+*
+* @param void
+* @return void
+* @note
+*/
 void DepthImagePlayer::slotChangeMaxAndMinValue()
 {
 	//获取结果
@@ -214,6 +305,14 @@ void DepthImagePlayer::slotChangeMaxAndMinValue()
 		
 }
 
+/**
+* @brief 修改子线程文件读取间隔事件
+* @details 为了避免子线程读取速度过快造成主线程无响应，每次读取图像之间加入延时。
+*
+* @param void
+* @return void
+* @note 
+*/
 void DepthImagePlayer::slotChangeTimeValue()
 {
 	uint16_t time = ui.lineEditTimes->text().toUShort();
@@ -223,6 +322,15 @@ void DepthImagePlayer::slotChangeTimeValue()
 	process.setTimes(time);
 }
 
+/**
+* @brief 更新图片槽
+* @details 接收子线程读取图片完成后发送的完成信号，完成图像在UI上的显示。
+*
+* @param img 子线程传来的读取图像
+* @param rst 当前读取到的图像序号，-1异常
+* @return void
+* @note 
+*/
 void DepthImagePlayer::slotUpdateImage(cv::Mat img, int rst)
 {
 	qDebug() << rst;
@@ -248,12 +356,15 @@ void DepthImagePlayer::slotUpdateImage(cv::Mat img, int rst)
 	ui.labelImageOri->setPixmap(QPixmap::fromImage(qimg));
 }
 
-void DepthImagePlayer::slotLabelClicked()
-{
-	qDebug() << "clicked";
-}
-
-
+/**
+* @brief 事件过滤器
+* @details 过滤图像点击事件，并获取点击坐标，在UI上显示点击点坐标、LSB和深度距离。
+*
+* @param obj 事件元素指针
+* @param e 事件类
+* @return void
+* @note 
+*/
 bool DepthImagePlayer::eventFilter(QObject* obj, QEvent* e)
 {
 	//获取鼠标点击事件

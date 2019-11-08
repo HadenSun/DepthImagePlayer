@@ -5,6 +5,11 @@
 #include <stdint.h>
 #include <opencv2/opencv.hpp>
 
+
+/**
+* @brief 类的简单概述
+* 类的详细概述
+*/
 class ImageProcess :
 	public QThread
 {
