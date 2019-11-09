@@ -37,9 +37,12 @@ void ImageProcess::run()
 			cv::Mat img = cv::imread(fileFullName.toLocal8Bit().toStdString(), CV_LOAD_IMAGE_ANYCOLOR | CV_LOAD_IMAGE_ANYDEPTH);
 
 
-			//TODO 添加算法代码在这里
+			//算法代码执行
+			algorithm->runAlgorithm();
 
-
+			//发送代码执行结果
+			//cv::Mat rst = algorithm->getResult();
+			//emit updataResult(rst.clone(), currentIndex);
 
 			emit updateImage(img.clone(), currentIndex);
 		}
@@ -87,4 +90,9 @@ void ImageProcess::setCurrentIndex(int index)
 void ImageProcess::setTimes(uint16_t time)
 {
 	this->time = time;
+}
+
+void ImageProcess::setAlgorithm(MyAlgorithm* algorithm)
+{
+	this->algorithm = algorithm;
 }

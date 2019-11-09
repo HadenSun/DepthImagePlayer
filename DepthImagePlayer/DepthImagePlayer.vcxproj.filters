@@ -56,6 +56,9 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_imageProcess.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="myAlgorithm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="depthimageplayer.h">
@@ -73,5 +76,10 @@
     <CustomBuild Include="GeneratedFiles\ui_depthimageplayer.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="myAlgorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

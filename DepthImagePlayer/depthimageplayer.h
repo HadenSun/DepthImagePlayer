@@ -20,6 +20,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "imageProcess.h"
+#include "myAlgorithm.h"
 
 
 
@@ -59,14 +60,15 @@ protected:
 
 
 private:
-	Ui::DepthImagePlayerClass ui;
-	cv::Mat matOri_uint16;				//存储读取到的原始图像，CV_16UC1类型
-	QString fileDir;					//文件夹路径
-	int indexOfCurrentItem = 0;	//存储当前文件在文件树中位置
+	Ui::DepthImagePlayerClass ui;		
+	MyAlgorithm *algorithm;				///<算法类指针
+	cv::Mat matOri_uint16;				///<存储读取到的原始图像，CV_16UC1类型
+	QString fileDir;					///<文件夹路径
+	int indexOfCurrentItem = 0;			///<存储当前文件在文件树中位置
 	QTreeWidgetItem* currentItem = NULL;	
 	ImageProcess process;
-	bool runState = 0;					//播放状态
-	uint16_t maxValue = 30000;			//伪彩色变换范围
+	bool runState = 0;					///<播放状态
+	uint16_t maxValue = 30000;			///<伪彩色变换范围
 	uint16_t minValue = 0;					
 
 

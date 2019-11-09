@@ -15,6 +15,8 @@
 #include <stdint.h>
 #include <opencv2/opencv.hpp>
 
+#include "myAlgorithm.h"
+
 
 /**
 * @brief 线程类
@@ -34,6 +36,7 @@ public:
 	void setFilesList(QStringList list);//设置文件列表
 	void setDir(QString dir);			//设置文件夹
 	void setCurrentIndex(int index);	//设置当前序号
+	void setAlgorithm(MyAlgorithm* algorithm);	//设置算法类指针
 
 signals:
 	void updateImage(cv::Mat, int);		//传新打开的图像  当前文件序号（失败-1）
@@ -43,10 +46,11 @@ protected:
 	void run();							//继承自QThread，线程运行函数
 
 private:
-	bool isRun = 0;
-	uint16_t time = 100;					//循环延时时间
-	QStringList files;					//文件列表
-	QString		dir;					//文件夹目录
-	int currentIndex = 0;			//当前文件序号
+	MyAlgorithm *algorithm;					///<算法类指针
+	bool isRun = 0;							///<子线程运行状态
+	uint16_t time = 100;					///<循环延时时间
+	QStringList files;						///<文件列表
+	QString		dir;						///<文件夹目录
+	int currentIndex = 0;					///<当前文件序号
 };
 

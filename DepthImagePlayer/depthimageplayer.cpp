@@ -43,7 +43,9 @@ DepthImagePlayer::DepthImagePlayer(QWidget *parent)
 	//文件树相关槽
 	QObject::connect(ui.dataTreeFiles, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), this, SLOT(slotDataTreeItemSelected(QTreeWidgetItem*, int)));
 	
-
+	//算法类初始化
+	algorithm = new MyAlgorithm();
+	process.setAlgorithm(algorithm);
 }
 
 /**
